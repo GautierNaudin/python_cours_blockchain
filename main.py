@@ -1,5 +1,7 @@
 import random as r
 import string
+import hashlib
+import time
 
 
 def a(b):
@@ -32,7 +34,24 @@ def gen_nounce(x):
     return ''.join(gen_chiffre_ou_lettre() for _ in range(0, x))
 
 
-"""def gen_nounce():
-    return ''.join(gen_chiffre_lettre() for _ in range(0, 4))"""
+def proof_of_work(difficulte: int, transactions: str, last_hash: str):
+    count = 0
+    start_time = time.time()
+    while 1:
+        count += 1
+        nounce = gen_nounce(64)
+        block = transactions + last_hash + nounce
+        block = bytes(block, 'utf-8')
+        bon = True
+        varhash = hashlib.sha224(block).hexdigest()
+        for i in range(0, difficulte):
+            if varhash[i] != "0":
+                bon = False
+        if bon:
+            print("nombre d'essais avant de trouver : " + str(count))
+            print("hash obtenu : " + varhash)
+            print("durée d'execution : " + str(time.time() - start_time))
+            return nounce
 
-print(gen_nounce(20))
+
+print(proof_of_work(16, "test", "2g6f5fz6dfsdf5e4fz6"))
